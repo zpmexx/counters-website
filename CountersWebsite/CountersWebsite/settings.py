@@ -50,6 +50,7 @@ ALLOWED_HOSTS = ['127.0.0.1','localhost','172.17.3.131']
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -57,6 +58,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'logins',
+    'passes',
+
 ]
 
 MIDDLEWARE = [
@@ -148,7 +151,7 @@ LANGUAGE_CODE = 'pl'
 
 LOGIN_URL = 'login'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'CET'
 
 USE_I18N = True
 
