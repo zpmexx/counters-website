@@ -1,12 +1,13 @@
 
 from rest_framework import generics
-from .serializers import PassSerializer
+from .serializers import PassSerializer, GroupBySerializer
 from passes.models import Pass
 from datetime import datetime
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
+from django.db.models import Count
 
 class PassListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
@@ -31,16 +32,33 @@ class PassListDetailView(generics.ListAPIView):
     def get_paginated_response(self, data):
        return Response(data)
     
+    
+class Pass24GroupView(generics.ListAPIView):
+    serializer_class = GroupBySerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter,DjangoFilterBackend]
+    # filterset_fields = {'time': ['gte', 'lte'],}
+    search_fields = ['salon']
+    
+    def get_queryset(self):
+        return Pass.objects.filter(date =  datetime.today().strftime('%Y-%m-%d')).values('salon').annotate(count=Count('*')).order_by('-count')
+
+    #next, previous, count hide
+    def get_paginated_response(self, data):
+        return Response(data)  
+    
+    
 
 class Pass24ListView(generics.ListAPIView):
     serializer_class = PassSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [filters.SearchFilter,DjangoFilterBackend]
-    filterset_fields = {'time': ['gte', 'lte'],}
+    ilterset_fields = {'time': ['gte', 'lte'],}
     search_fields = ['salon']
     
     def get_queryset(self):
         return Pass.objects.filter(date = datetime.today().strftime('%Y-%m-%d')).order_by('-time')
+    
     #next, previous, count hide
     def get_paginated_response(self, data):
        return Response(data)
