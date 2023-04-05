@@ -1,6 +1,6 @@
 <template>
   <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App witam elo
+  <HelloWorld msg="Welcome to Your Vue.js App witam elo po stronie developera karola zmiana ale jak juz django dzialsdsdadsassss ess
   "/>
 </template>
 
@@ -25,3 +25,5 @@ export default {
   margin-top: 60px;
 }
 </style>
+
+
