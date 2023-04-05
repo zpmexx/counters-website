@@ -1,6 +1,6 @@
 <template>
   <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App witam elo po stronie developera karola zmiana ale jak juz django dzialsdsdadsassss ess
+  <HelloWorld msg="Welcome to Yourr lcontuenr site
   "/>
 </template>
 
