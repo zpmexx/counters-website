@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-// import Chart from "chart.js/auto";
+import Chart from 'chart.js/auto';
 import { Chart as ChartJS2 } from "react-chartjs-2";
 
 import ShopList from "./components/ShopList";
