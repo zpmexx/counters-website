@@ -30,11 +30,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # STATIC_ROOT = os.path.join(BASE_DIR, "static_collect")
 
-STATIC_URL = 'static/'
-
-STATICFILES_DIRS = [
-      BASE_DIR / 'static',
-  ]
 
 #production static files
 
@@ -85,7 +80,8 @@ ROOT_URLCONF = 'CountersWebsite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        #'DIRS': [BASE_DIR / 'templates'], #vue dirs
+        'DIRS': [BASE_DIR / 'reactfront/build'], #react dirs
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -97,6 +93,20 @@ TEMPLATES = [
         },
     },
 ]
+
+
+STATIC_URL = '/static/'
+
+#vue static
+#STATICFILES_DIRS = [
+#      BASE_DIR / 'static',
+#  ]
+
+STATICFILES_DIRS = [
+      BASE_DIR / 'reactfront/build/static',
+  ]
+
+
 
 WSGI_APPLICATION = 'CountersWebsite.wsgi.application'
 

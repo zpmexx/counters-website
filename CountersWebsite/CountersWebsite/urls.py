@@ -26,6 +26,6 @@ from django.views.generic import TemplateView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", include('passes.restapi.urls')),
-    path('vue/', TemplateView.as_view(template_name='index.html'), name='index'),
+    path('react/', TemplateView.as_view(template_name='index.html'), name='index'),
     path("api-auth/", include('rest_framework.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
