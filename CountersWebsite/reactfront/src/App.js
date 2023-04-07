@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import Chart from 'chart.js/auto';
-import { Chart as ChartJS2 } from "react-chartjs-2";
 
 import ShopList from "./components/ShopList";
+import ShopChart from "./components/ShopChart";
 import { generateShopData } from "./utils/dataGenerator";
 
 function App() {
@@ -48,11 +47,7 @@ function App() {
     <div className="App">
       <div className="flex">
         <ShopList shops={shops} onShopClick={handleShopClick} />
-        {chartData && (
-          <div className="w-2/3">
-            <ChartJS2 type="line" data={chartData} options={{}} />
-          </div>
-        )}
+        <ShopChart chartData={chartData} />
       </div>
     </div>
   );
