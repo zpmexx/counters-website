@@ -1,3 +1,4 @@
+// src/components/ShopChart.js
 import React from "react";
 import { VictoryLine, VictoryChart, VictoryAxis } from "victory";
 
@@ -11,20 +12,28 @@ const ShopChart = ({ chartData }) => {
 
   return (
     <div className="w-2/3 flex justify-center items-center">
-      <div className="square-chart-container">
-        <VictoryChart>
-          <VictoryAxis />
-          <VictoryAxis dependentAxis />
-          <VictoryLine
-            data={victoryData}
-            style={{
-              data: {
-                stroke: "rgb(75, 192, 192)",
-                strokeWidth: 2,
-              },
-            }}
-          />
-        </VictoryChart>
+      <div className="square-chart-container relative w-full max-w-md">
+        <div
+          className="h-0 relative"
+          style={{ paddingBottom: "100%" }}
+        >
+          <div className="absolute h-full w-full">
+            <VictoryChart>
+              <VictoryAxis />
+              <VictoryAxis dependentAxis />
+              <VictoryLine
+                data={victoryData}
+                style={{
+                  data: {
+                    stroke: "rgb(75, 192, 192)",
+                    strokeWidth: 2,
+                  },
+                }}
+                interpolation="natural"
+              />
+            </VictoryChart>
+          </div>
+        </div>
       </div>
     </div>
   );
