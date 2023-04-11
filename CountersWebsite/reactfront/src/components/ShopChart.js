@@ -2,7 +2,7 @@
 import React from "react";
 import { VictoryLine, VictoryChart, VictoryAxis } from "victory";
 
-const ShopChart = ({ chartData }) => {
+const ShopChart = ({ chartData, shopId }) => {
   if (!chartData) return null;
 
   const victoryData = chartData.labels.map((label, index) => ({
@@ -10,31 +10,27 @@ const ShopChart = ({ chartData }) => {
     y: chartData.datasets[0].data[index],
   }));
 
+  const totalEntrances = chartData.datasets[0].data.reduce((a, b) => a + b, 0);
+
   return (
-    <div className="w-2/3 flex justify-center items-center">
-      <div className="square-chart-container relative w-full max-w-md">
-        <div
-          className="h-0 relative"
-          style={{ paddingBottom: "100%" }}
-        >
-          <div className="absolute h-full w-full">
-            <VictoryChart>
-              <VictoryAxis />
-              <VictoryAxis dependentAxis />
-              <VictoryLine
-                data={victoryData}
-                style={{
-                  data: {
-                    stroke: "rgb(75, 192, 192)",
-                    strokeWidth: 2,
-                  },
-                }}
-                interpolation="natural"
-              />
-            </VictoryChart>
-          </div>
-        </div>
+    <div>
+      <div className="text-2xl mb-4">
+        {shopId} | Klientów: {totalEntrances}
       </div>
+      <VictoryChart height={500} width={500}>
+        <VictoryAxis tickCount={6} />
+        <VictoryAxis dependentAxis />
+        <VictoryLine
+          data={victoryData}
+          style={{
+            data: {
+              stroke: "rgb(75, 192, 192)",
+              strokeWidth: 2,
+            },
+          }}
+          interpolation="natural"
+        />
+      </VictoryChart>
     </div>
   );
 };
