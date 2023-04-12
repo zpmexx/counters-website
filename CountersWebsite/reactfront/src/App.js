@@ -59,18 +59,25 @@ function App() {
   }, []);
 
   const getTopShopId = (data) => {
-    const groupedShops = data.reduce((acc, shop) => {
+    const today = new Date();
+    const todayISOString = today.toISOString().split("T")[0];
+
+    // Filter data for today's date
+    const todaysData = data.filter((entry) => entry.date === todayISOString);
+
+    const groupedShops = todaysData.reduce((acc, shop) => {
       acc[shop.salon] = (acc[shop.salon] || 0) + 1;
       return acc;
     }, {});
 
     const sortedShops = Object.entries(groupedShops).sort((a, b) => b[1] - a[1]);
+
     return sortedShops[0][0];
   };
 
   return (
   <div className="App">
-    <div className="flex">
+    <div className="flex m-5">
       <ShopList shops={shops} onShopClick={handleShopClick} selectedShop={selectedShop} searchValue={searchValue} setSearchValue={setSearchValue} />
       <ShopChart chartData={chartData} shopId={selectedShop} />
     </div>

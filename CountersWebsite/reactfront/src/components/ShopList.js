@@ -2,13 +2,56 @@
 import React, { useState, useEffect } from "react";
 import ShopListElement from "./ShopListElement";
 import ListSearch from "./ListSearch";
+import PaginationButton from "./PaginationButton";
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 15;
+
+const getDateRange = (days) => {
+  const today = new Date();
+  const rangeStart = new Date(today.getTime() - days * 24 * 60 * 60 * 1000);
+  return [rangeStart, today];
+};
+
+const filterDataByDateRange = (data, rangeStart, rangeEnd) => {
+  return data.filter((entry) => {
+    const entryDate = new Date(entry.date);
+    return entryDate >= rangeStart && entryDate <= rangeEnd;
+  });
+};
 
 const ShopList = ({ shops, onShopClick, selectedShop, searchValue, setSearchValue }) => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortColumn, setSortColumn] = useState({ column: "today", direction: "desc" });
+
+  const handleSort = (column) => {
+    setSortColumn((prev) => {
+      if (prev.column === column) {
+        return { column, direction: prev.direction === "asc" ? "desc" : "asc" };
+      }
+      return { column, direction: "desc" };
+    });
+  };
 
   const groupedShops = shops.reduce((acc, shop) => {
+    acc[shop.salon] = (acc[shop.salon] || 0) + 1;
+    return acc;
+  }, {});
+
+  const todayRange = getDateRange(1);
+  const last7DaysRange = getDateRange(7);
+  const last30DaysRange = getDateRange(30);
+
+  const groupedShopsToday = filterDataByDateRange(shops, ...todayRange).reduce((acc, shop) => {
+    acc[shop.salon] = (acc[shop.salon] || 0) + 1;
+    return acc;
+  }, {});
+
+  const groupedShopsLast7Days = filterDataByDateRange(shops, ...last7DaysRange).reduce((acc, shop) => {
+    acc[shop.salon] = (acc[shop.salon] || 0) + 1;
+    return acc;
+  }, {});
+
+  const groupedShopsLast30Days = filterDataByDateRange(shops, ...last30DaysRange).reduce((acc, shop) => {
     acc[shop.salon] = (acc[shop.salon] || 0) + 1;
     return acc;
   }, {});
@@ -19,7 +62,35 @@ const ShopList = ({ shops, onShopClick, selectedShop, searchValue, setSearchValu
     searchValue.length > 0 ? shopId.toLowerCase().startsWith(searchValue.toLowerCase()) : true
   );
 
+  const sortFn = (a, b) => {
+    const [shopA, countA] = a;
+    const [shopB, countB] = b;
+    const direction = sortColumn.direction === "asc" ? 1 : -1;
+
+    switch (sortColumn.column) {
+      case "shop":
+        return shopA.localeCompare(shopB) * direction;
+      case "today":
+        return (groupedShopsToday[shopA] - groupedShopsToday[shopB]) * direction;
+      case "7days":
+        return (groupedShopsLast7Days[shopA] - groupedShopsLast7Days[shopB]) * direction;
+      case "30days":
+        return (groupedShopsLast30Days[shopA] - groupedShopsLast30Days[shopB]) * direction;
+      default:
+        return 0;
+    }
+  };
+
+  const sortedAndFilteredShops = filteredShops.sort(sortFn);
+
   const totalPages = Math.ceil(filteredShops.length / ITEMS_PER_PAGE) || 1;
+
+  // Update the sorting based on the sortColumn state
+  useEffect(() => {
+    
+
+    filteredShops.sort(sortFn);
+  }, [sortColumn, filteredShops, sortFn]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -29,7 +100,7 @@ const ShopList = ({ shops, onShopClick, selectedShop, searchValue, setSearchValu
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
 
-  const displayedShops = filteredShops.slice(startIndex, endIndex);
+  const displayedShops = sortedAndFilteredShops.slice(startIndex, endIndex);
 
   const handleNext = () => {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
@@ -42,54 +113,60 @@ const ShopList = ({ shops, onShopClick, selectedShop, searchValue, setSearchValu
   return (
     <div className="w-1/3">
       <ListSearch searchValue={searchValue} onSearchChange={setSearchValue} />
-      <h2 className="text-xl font-bold p-2 bg-blue-200">
-      <div className="flex justify-between items-center">
-              <ShopListElement text={"Shop"} bgColor="blue-500" />
-              <ShopListElement text={"Klienci"} bgColor="blue-500" />
-            </div>
+      <h2 className="text-xl font-bold pb-1 bg-faded">
+      <div className="flex justify-between items-center gap-1 bg-secondary">
+          <ShopListElement
+            text={"Shop"}
+            bgColor={sortColumn.column === "shop" ? "secondary" : "primary"}
+            onClick={() => handleSort("shop")}
+          />
+          <ShopListElement
+            text={"Dzisiaj"}
+            bgColor={sortColumn.column === "today" ? "secondary" : "primary"}
+            onClick={() => handleSort("today")}
+          />
+          <ShopListElement
+            text={"7 dni"}
+            bgColor={sortColumn.column === "7days" ? "secondary" : "primary"}
+            onClick={() => handleSort("7days")}
+          />
+          <ShopListElement
+            text={"30 dni"}
+            bgColor={sortColumn.column === "30days" ? "secondary" : "primary"}
+            onClick={() => handleSort("30days")}
+          />
+        </div>
       </h2>
-      <ul>
-        {displayedShops.map(([shopId, entrances]) => (
+      <ul className="bg-secondary">
+      {displayedShops.map(([shopId, entrances]) => (
           <li
             key={shopId}
-            className={`cursor-pointer p-2 ${
-              selectedShop === shopId ? "bg-green-200" : "hover:bg-gray-200"
-            }`}
+            className={`cursor-pointer`}
             onClick={() => onShopClick(shopId)}
           >
-            <div className="flex justify-between items-center">
-              <ShopListElement text={shopId} bgColor="blue-500" />
-              <ShopListElement text={entrances} bgColor="blue-500" />
+            <div className="flex justify-between items-center gap-1">
+              <ShopListElement text={shopId} bgColor="primary" />
+              <ShopListElement text={groupedShopsToday[shopId] || 0} bgColor="primary" />
+              <ShopListElement text={groupedShopsLast7Days[shopId] || 0} bgColor="primary" />
+              <ShopListElement text={groupedShopsLast30Days[shopId] || 0} bgColor="primary" />
             </div>
           </li>
         ))}
       </ul>
-      <div className="mt-4 px-2 flex justify-between items-center">
-        <button
-          className={`${
-            currentPage === 1
-              ? "bg-gray-300 cursor-not-allowed"
-              : "bg-blue-500 hover:bg-blue-600"
-          } text-white w-32 py-2 rounded`}
+      <div className="flex justify-between items-center mt-2">
+        <PaginationButton
+          isDisabled={currentPage === 1}
           onClick={handlePrev}
-          disabled={currentPage === 1}
-        >
-          Poprzedni
-        </button>
-        <span className="text-lg font-semibold">
-          {currentPage}/{totalPages}
-        </span>
-        <button
-          className={`${
-            currentPage === totalPages
-              ? "bg-gray-300 cursor-not-allowed"
-              : "bg-blue-500 hover:bg-blue-600"
-          } text-white w-32 py-2 rounded`}
+          text="Poprzedni"
+        />
+        <div className="text-lg font-semibold w-1/3 text-center text-white bg-faded py-2 select-none">
+          {currentPage} / {totalPages}
+        </div>
+        <PaginationButton
+          isDisabled={currentPage === totalPages}
           onClick={handleNext}
-          disabled={currentPage === totalPages}
-        >
-          Następny
-        </button>
+          text="Następny"
+        />
       </div>
     </div>
   );
