@@ -67,6 +67,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    #   "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -93,18 +94,21 @@ TEMPLATES = [
         },
     },
 ]
-
-
 STATIC_URL = '/static/'
 
+
+STATICFILES_DIRS = [
+      BASE_DIR / 'reactfront/build/static',
+  ]
+
+
+# STATIC_ROOT = os.path.join(BASE_DIR, 'reactfront/build/static')
 #vue static
 #STATICFILES_DIRS = [
 #      BASE_DIR / 'static',
 #  ]
 
-STATICFILES_DIRS = [
-      BASE_DIR / 'reactfront/build/static',
-  ]
+
 
 
 
@@ -189,9 +193,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 50,
     #  'DEFAULT_RENDERER_CLASSES': (
