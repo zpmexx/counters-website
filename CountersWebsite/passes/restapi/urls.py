@@ -5,7 +5,7 @@ from .views import PassPreviousSeven,PassCurrentSeven,PassPreviousThirty,PassCur
 
 urlpatterns = [
     #path('', include(router.urls)),
-    path("",Pass24GroupView.as_view(),name='passes-group'),
+    path("today/",Pass24GroupView.as_view(),name='passes-group'),
     path("wszystkie/",PassListView.as_view(),name='passes-list'),
     path('<int:pk>/',PassListDetailView.as_view(),name='pass-detail'),
     path('salon/<str:salon>/', PassListSalonView.as_view(), name = 'pass-salon'),
