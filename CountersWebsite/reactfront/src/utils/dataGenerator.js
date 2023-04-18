@@ -1,6 +1,6 @@
 export const generateShopData = () => {
   const data = [];
-  const shopCount = 199;
+  const shopCount = 10;
   const today = new Date();
   const month = today.getMonth();
   const year = today.getFullYear();

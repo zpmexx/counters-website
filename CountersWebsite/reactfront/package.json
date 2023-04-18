@@ -8,6 +8,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "autoprefixer": "^10.3.6",
+    "axios": "^1.3.5",
     "chart.js": "^4.2.1",
     "postcss": "^8.3.6",
     "react": "^18.2.0",
@@ -23,8 +24,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-	"postbuild": "xcopy web.config build\\\\static && xcopy admin build\\\\static /E /H /C /I && xcopy rest_framework build\\\\static /E /H /C /I"
-
+    "postbuild": "xcopy web.config build\\\\static && xcopy admin build\\\\static /E /H /C /I && xcopy rest_framework build\\\\static /E /H /C /I"
   },
   "eslintConfig": {
     "extends": [
@@ -44,5 +44,4 @@
       "last 1 safari version"
     ]
   }
-
 }
