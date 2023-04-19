@@ -1,7 +1,7 @@
 import React from "react";
 
-const ShopListElement = ({ text, bgColor, onClick }) => {
-  const baseClasses = `text-white text-lg text-sm p-1 w-full text-center bg-${bgColor} transition-all`;
+const ShopListElement = ({ text, bgColor, onClick, roundedClass }) => {
+  const baseClasses = `text-white text-xl font-light text-sm p-1 w-full text-center bg-${bgColor} ${roundedClass} transition-all select-none`;
   const hoverClass = onClick ? 'hover:bg-hoverbg hover:text-hovertext' : '';
 
   return (
