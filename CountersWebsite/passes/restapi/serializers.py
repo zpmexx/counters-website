@@ -13,3 +13,17 @@ class GroupBySerializer(serializers.Serializer):
 
     def get_count(self, obj):
         return obj['count']
+
+class GroupByHourSerializer(serializers.Serializer):
+    hour = serializers.IntegerField()
+    count = serializers.SerializerMethodField()
+
+    def get_count(self, obj):
+        return obj['count']
+
+class GroupByDaySerializer(serializers.Serializer):
+    date = serializers.CharField()
+    count = serializers.SerializerMethodField()
+
+    def get_count(self, obj):
+        return obj['count']

@@ -1,5 +1,5 @@
 from rest_framework import generics
-from .serializers import PassSerializer, GroupBySerializer
+from .serializers import PassSerializer, GroupBySerializer, GroupByHourSerializer, GroupByDaySerializer
 from passes.models import Pass
 from datetime import datetime, timedelta
 from rest_framework.permissions import IsAuthenticated
@@ -7,6 +7,8 @@ from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from django.db.models import Count
+from django.db.models.functions import ExtractHour,TruncDate
+
 
 class PassListView(generics.ListAPIView):
     # permission_classes = [IsAuthenticated]
@@ -73,7 +75,7 @@ class PassListSalonView(generics.ListAPIView):
     
     def get_queryset(self):
         salon = self.kwargs['salon']
-        return Pass.objects.filter(salon = salon)
+        return Pass.objects.filter(salon = salon).order_by('-date','-time')
         
     #next, previous, count hide
     def get_paginated_response(self, data):
@@ -143,9 +145,39 @@ class PassCurrenThirty(generics.ListAPIView):
     def get_paginated_response(self, data):
         return Response(data) 
     
-class PassGroupedByDay(generics.ListAPIView):
-    pass
-    
+class PassGroupedBy7Day(generics.ListAPIView):
+    serializer_class = GroupByDaySerializer
+    def get_queryset(self):
+        salon = self.kwargs['salon']
+        return Pass.objects.filter(salon = salon,date__gte=datetime.now()-timedelta(days=7)).annotate(
+    day=TruncDate('date')).values('date').annotate(count=Count('*')).order_by('-date')
+
+    #next, previous, count hide
+    def get_paginated_response(self, data):
+        return Response(data) 
+
+class PassGroupedBy30Day(generics.ListAPIView):
+    serializer_class = GroupByDaySerializer
+    def get_queryset(self):
+        salon = self.kwargs['salon']
+        return Pass.objects.filter(salon = salon,date__gte=datetime.now()-timedelta(days=30)).annotate(
+    day=TruncDate('date')).values('date').annotate(count=Count('*')).order_by('-date')
+
+    #next, previous, count hide
+    def get_paginated_response(self, data):
+        return Response(data) 
+
+
 class PassGroupedByHour(generics.ListAPIView):
-    pass
+    serializer_class = GroupByHourSerializer
+
+    def get_queryset(self):
+        salon = self.kwargs['salon']
+        return Pass.objects.filter(salon = salon,date =  datetime.today().strftime('%Y-%m-%d')).annotate(
+    hour=ExtractHour('time')).values('hour').annotate(count=Count('*')).order_by('-hour')
+    
+    #next, previous, count hide
+    def get_paginated_response(self, data):
+        return Response(data) 
+    
 
