@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { VictoryArea, VictoryChart, VictoryAxis, VictoryScatter, VictoryTooltip } from "victory";
 import ChartInfoBox from "./ChartInfoBox";
-
+import axios from 'axios';
 
 const ShopChart = ({ selectedDateRange, chartData, shopId }) => {
   if (!chartData) return null;

@@ -13,38 +13,54 @@ const getDateRange = (days) => {
   return [rangeStart, today];
 };
 
-const filterDataByDateRange = (data, rangeStart, rangeEnd) => {
-  return data.filter((entry) => {
-    const entryDate = new Date(entry.date);
-    return entryDate >= rangeStart && entryDate <= rangeEnd;
-  });
-};
-
-const ShopList = ({ shops, onShopClick, selectedShop, setSelectedDateRange, searchValue, setSearchValue }) => {
+const ShopList = ({ shops, onShopClick, selectedShop, searchValue, setSearchValue }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortColumn, setSortColumn] = useState({ column: "today", direction: "desc" });
 
   const [shopsToday, setShopsToday] = useState([]);
-  const [shopsLast7Days, setShopsLast7Days] = useState([]);
-  const [shopsLast30Days, setShopsLast30Days] = useState([]);
+  const [shopsCurrent7Days, setShopsCurrent7Days] = useState([]);
+  const [shopsCurrent30Days, setShopsCurrent30Days] = useState([]);
 
-  const fetchData = async () => {
+  const [shopsPrevious7Days, setShopsPrevious7Days] = useState([]);
+  const [shopsPrevious30Days, setShopsPrevious30Days] = useState([]);
+
+  const fetchDataCurrent = async () => {
     try {
       const todayResponse = await axios.get('http://172.17.3.131/today/?format=json');
       setShopsToday(todayResponse.data);
   
       const sevenDaysResponse = await axios.get('http://172.17.3.131/current_seven/?format=json');
-      setShopsLast7Days(sevenDaysResponse.data);
+      setShopsCurrent7Days(sevenDaysResponse.data);
   
       const thirtyDaysResponse = await axios.get('http://172.17.3.131/current_thirty/?format=json');
-      setShopsLast30Days(thirtyDaysResponse.data);
+      setShopsCurrent30Days(thirtyDaysResponse.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  const fetchDataPrevious = async () => {
+    try {
+      const sevenDaysResponse = await axios.get('http://172.17.3.131/previous_seven/?format=json');
+      setShopsPrevious7Days(sevenDaysResponse.data);
+  
+      const thirtyDaysResponse = await axios.get('http://172.17.3.131/previous_thirty/?format=json');
+      setShopsPrevious30Days(thirtyDaysResponse.data);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
 
   useEffect(() => {
-    fetchData();
+    fetchDataCurrent();
+    fetchDataPrevious();
+
+    const intervalId = setInterval(() => {
+      fetchDataCurrent(); // Fetch data every 5 seconds.
+    }, 5000);
+    console.log("fetch");
+
+    return () => clearInterval(intervalId);
   }, []);
 
   const handleSort = (column) => {
@@ -56,26 +72,7 @@ const ShopList = ({ shops, onShopClick, selectedShop, setSelectedDateRange, sear
     });
   };
 
-  const groupedShops = shops.reduce((acc, shop) => {
-    acc[shop.salon] = (acc[shop.salon] || 0) + 1;
-    return acc;
-  }, {});
-
-  // const todayRange = getDateRange(1);
-  // const last7DaysRange = getDateRange(7);
-  // const last30DaysRange = getDateRange(30);
-
-  // const groupedShopsToday = filterDataByDateRange(shops, ...todayRange).reduce((acc, shop) => {
-  //   acc[shop.salon] = (acc[shop.salon] || 0) + 1;
-  //   return acc;
-  // }, {});
-
-  // const groupedShopsLast7Days = filterDataByDateRange(shops, ...last7DaysRange).reduce((acc, shop) => {
-  //   acc[shop.salon] = (acc[shop.salon] || 0) + 1;
-  //   return acc;
-  // }, {});
-
-  // const groupedShopsLast30Days = filterDataByDateRange(shops, ...last30DaysRange).reduce((acc, shop) => {
+  // const groupedShops = shops.reduce((acc, shop) => {
   //   acc[shop.salon] = (acc[shop.salon] || 0) + 1;
   //   return acc;
   // }, {});
@@ -88,18 +85,19 @@ const ShopList = ({ shops, onShopClick, selectedShop, setSelectedDateRange, sear
   };
 
   const groupedShopsToday = groupShops(shopsToday);
-  const groupedShopsLast7Days = groupShops(shopsLast7Days);
-  const groupedShopsLast30Days = groupShops(shopsLast30Days);
+  const groupedShopsCurrent7Days = groupShops(shopsCurrent7Days);
+  const groupedShopsCurrent30Days = groupShops(shopsCurrent30Days);
+  const groupedShopsPrevious7Days = groupShops(shopsPrevious7Days);
+  const groupedShopsPrevious30Days = groupShops(shopsPrevious30Days);
 
-  const sortedShops = Object.entries(groupedShops).sort((a, b) => b[1] - a[1]);
-
-  const filteredShops = sortedShops.filter(([shopId]) =>
+  const shopCodes = [...new Set(Object.keys(groupedShopsToday).concat(Object.keys(groupedShopsCurrent7Days)).concat(Object.keys(groupedShopsCurrent30Days)))]
+  const filteredShops = shopCodes.filter((shopId) =>
     searchValue.length > 0 ? shopId.toLowerCase().startsWith(searchValue.toLowerCase()) : true
   );
 
   const sortFn = useCallback((a, b) => {
-    const [shopA, countA] = a;
-    const [shopB, countB] = b;
+    const shopA = a;
+    const shopB = b;
     const direction = sortColumn.direction === "asc" ? 1 : -1;
 
     switch (sortColumn.column) {
@@ -108,15 +106,18 @@ const ShopList = ({ shops, onShopClick, selectedShop, setSelectedDateRange, sear
       case "today":
         return (groupedShopsToday[shopA] - groupedShopsToday[shopB]) * direction;
       case "7days":
-        return (groupedShopsLast7Days[shopA] - groupedShopsLast7Days[shopB]) * direction;
+        return (groupedShopsCurrent7Days[shopA] - groupedShopsCurrent7Days[shopB]) * direction;
       case "30days":
-        return (groupedShopsLast30Days[shopA] - groupedShopsLast30Days[shopB]) * direction;
+        console.log(groupedShopsCurrent30Days);
+        return (groupedShopsCurrent30Days[shopA] - groupedShopsCurrent30Days[shopB]) * direction;
       default:
         return 0;
     }
-  }, [sortColumn, groupedShopsToday, groupedShopsLast7Days, groupedShopsLast30Days]);
+  }, [sortColumn, groupedShopsToday, groupedShopsCurrent7Days, groupedShopsCurrent30Days]);
 
   const sortedAndFilteredShops = filteredShops.sort(sortFn);
+
+  console.log(sortedAndFilteredShops);
 
   const totalPages = Math.ceil(filteredShops.length / ITEMS_PER_PAGE) || 1;
 
@@ -133,6 +134,7 @@ const ShopList = ({ shops, onShopClick, selectedShop, setSelectedDateRange, sear
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
 
+  // DISPLAYED
   const displayedShops = sortedAndFilteredShops.slice(startIndex, endIndex);
 
   const handleNext = () => {
@@ -173,23 +175,23 @@ const ShopList = ({ shops, onShopClick, selectedShop, setSelectedDateRange, sear
         </div>
       </h2>
       <ul className="bg-secondary pt-1 rounded-b-md">
-      {displayedShops.map(([shopId, entrances], index) => (
+      {displayedShops.map((shopId, index) => (
           <li
             key={shopId}
           >
             <div className="flex justify-between items-center gap-1">
               <ShopListElement text={shopId} bgColor={selectedShop === shopId ? "faded" : "primary"} roundedClass={index === displayedShops.length - 1 ? "rounded-bl-md" : ""}  />
-              <ShopListElement text={groupedShopsToday[shopId] || 0} bgColor={selectedShop === shopId ? "faded" : "primary"} onClick={() => {
+              <ShopListElement text={groupedShopsToday[shopId] || '...'} bgColor={selectedShop === shopId ? "faded" : "primary"} onClick={() => {
                   const newDateRange = getDateRange(1);
                   onShopClick(shopId, newDateRange);
                 }} 
               />
-              <ShopListElement text={groupedShopsLast7Days[shopId] || 0} bgColor={selectedShop === shopId ? "faded" : "primary"} onClick={() => {
+              <ShopListElement text={groupedShopsCurrent7Days[shopId] || '...'} bgColor={selectedShop === shopId ? "faded" : "primary"} onClick={() => {
                   const newDateRange = getDateRange(7);
                   onShopClick(shopId, newDateRange);
                 }} 
               />
-              <ShopListElement text={groupedShopsLast30Days[shopId] || 0} bgColor={selectedShop === shopId ? "faded" : "primary"} onClick={() => {
+              <ShopListElement text={groupedShopsCurrent30Days[shopId] || '...'} bgColor={selectedShop === shopId ? "faded" : "primary"} onClick={() => {
                   const newDateRange = getDateRange(30);
                   onShopClick(shopId, newDateRange);
                 }} roundedClass={index === displayedShops.length - 1 ? "rounded-br-md" : ""}
