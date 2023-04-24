@@ -24,7 +24,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "postbuild": "xcopy web.config build\\\\static && xcopy admin build\\\\static /E /H /C /I && xcopy rest_framework build\\\\static /E /H /C /I"
+    "postbuild": "xcopy kopia build\\\\static /E /H /I"
+
   },
   "eslintConfig": {
     "extends": [
