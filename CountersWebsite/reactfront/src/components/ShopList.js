@@ -13,7 +13,7 @@ const getDateRange = (days) => {
   return [rangeStart, today];
 };
 
-const ShopList = ({ shops, onShopClick, selectedShop, searchValue, setSearchValue }) => {
+const ShopList = ({ onShopClick, selectedShop, searchValue, setSearchValue }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortColumn, setSortColumn] = useState({ column: "today", direction: "desc" });
 
@@ -108,7 +108,6 @@ const ShopList = ({ shops, onShopClick, selectedShop, searchValue, setSearchValu
       case "7days":
         return (groupedShopsCurrent7Days[shopA] - groupedShopsCurrent7Days[shopB]) * direction;
       case "30days":
-        console.log(groupedShopsCurrent30Days);
         return (groupedShopsCurrent30Days[shopA] - groupedShopsCurrent30Days[shopB]) * direction;
       default:
         return 0;
@@ -116,8 +115,6 @@ const ShopList = ({ shops, onShopClick, selectedShop, searchValue, setSearchValu
   }, [sortColumn, groupedShopsToday, groupedShopsCurrent7Days, groupedShopsCurrent30Days]);
 
   const sortedAndFilteredShops = filteredShops.sort(sortFn);
-
-  console.log(sortedAndFilteredShops);
 
   const totalPages = Math.ceil(filteredShops.length / ITEMS_PER_PAGE) || 1;
 
@@ -146,15 +143,15 @@ const ShopList = ({ shops, onShopClick, selectedShop, searchValue, setSearchValu
   };
   
   return (
-    <div className="w-1/3">
+    <div className="w-1/2">
       <ListSearch searchValue={searchValue} onSearchChange={setSearchValue} />
       <h2 className="text-xl font-bold">
-        <div className="flex justify-between items-center gap-1 bg-secondary rounded-md">
+        <div className="flex justify-between items-center gap-0.5">
           <ShopListElement
             text={"Shop"}
             bgColor={sortColumn.column === "shop" ? "secondary" : "primary"}
             onClick={() => handleSort("shop")}
-            roundedClass={"rounded-tl-md"}
+            roundedClass={"rounded-tl-2xl"}
           />
           <ShopListElement
             text={"Dzisiaj"}
@@ -167,54 +164,54 @@ const ShopList = ({ shops, onShopClick, selectedShop, searchValue, setSearchValu
             onClick={() => handleSort("7days")}
           />
           <ShopListElement
-            text={"30 dni"}
-            bgColor={sortColumn.column === "30days" ? "secondary" : "primary"}
+            text={"31 dni"}
+            bgColor={sortColumn.column === "31days" ? "secondary" : "primary"}
             onClick={() => handleSort("30days")}
-            roundedClass={"rounded-tr-md"}
+            roundedClass={"rounded-tr-2xl"}
           />
         </div>
       </h2>
-      <ul className="bg-secondary pt-1 rounded-b-md">
+      <ul className="pt-0.5 rounded-b-2xl shadow-lg">
       {displayedShops.map((shopId, index) => (
           <li
             key={shopId}
           >
-            <div className="flex justify-between items-center gap-1">
-              <ShopListElement text={shopId} bgColor={selectedShop === shopId ? "faded" : "primary"} roundedClass={index === displayedShops.length - 1 ? "rounded-bl-md" : ""}  />
+            <div className="flex justify-between items-center gap-0.5">
+              <ShopListElement text={shopId} bgColor={selectedShop === shopId ? "faded" : "primary"} roundedClass={index === displayedShops.length - 1 ? "rounded-bl-2xl" : ""}  />
               <ShopListElement text={groupedShopsToday[shopId] || '...'} bgColor={selectedShop === shopId ? "faded" : "primary"} onClick={() => {
                   const newDateRange = getDateRange(1);
-                  onShopClick(shopId, newDateRange);
+                  onShopClick(shopId, {startDate: newDateRange[0], endDate: newDateRange[1]});
                 }} 
               />
               <ShopListElement text={groupedShopsCurrent7Days[shopId] || '...'} bgColor={selectedShop === shopId ? "faded" : "primary"} onClick={() => {
                   const newDateRange = getDateRange(7);
-                  onShopClick(shopId, newDateRange);
+                  onShopClick(shopId, {startDate: newDateRange[0], endDate: newDateRange[1]});
                 }} 
               />
               <ShopListElement text={groupedShopsCurrent30Days[shopId] || '...'} bgColor={selectedShop === shopId ? "faded" : "primary"} onClick={() => {
                   const newDateRange = getDateRange(30);
-                  onShopClick(shopId, newDateRange);
-                }} roundedClass={index === displayedShops.length - 1 ? "rounded-br-md" : ""}
+                  onShopClick(shopId, {startDate: newDateRange[0], endDate: newDateRange[1]});
+                }} roundedClass={index === displayedShops.length - 1 ? "rounded-br-2xl" : ""}
               />
             </div>
           </li>
         ))}
       </ul>
-      <div className="flex justify-between items-center mt-2">
+      <div className="flex justify-between items-center mt-4 shadow-lg rounded-2xl">
         <PaginationButton
           isDisabled={currentPage === 1}
           onClick={handlePrev}
           text="Poprzedni"
-          roundedClass={"rounded-l-md"}
+          roundedClass={"rounded-l-2xl"}
         />
-        <div className="text-lg font-semibold w-1/3 text-center text-white bg-faded py-2 select-none">
+        <div className="text-lg font-light w-1/3 text-center text-white bg-faded py-2 select-none">
           {currentPage} / {totalPages}
         </div>
         <PaginationButton
           isDisabled={currentPage === totalPages}
           onClick={handleNext}
           text="Następny"
-          roundedClass={"rounded-r-md"}
+          roundedClass={"rounded-r-2xl"}
         />
       </div>
     </div>

@@ -3,5 +3,8 @@
 @tailwind utilities;
 
 body {
-  background-color: #2d6a4f;
+  background-color: #EEEEEE;
+}
+input:focus, textarea:focus, select:focus{
+  outline: none;
 }

@@ -7,7 +7,7 @@ const PaginationButton = ({ isDisabled, onClick, text, roundedClass }) => {
 
   return (
     <button
-      className={`${buttonClasses} text-white font-light w-32 py-2 text-xl tracking-wide transition-all w-1/3 ${roundedClass}`}
+      className={`${buttonClasses} text-white font-light w-32 py-2 text-lg tracking-wide transition-all w-1/3 ${roundedClass}`}
       onClick={onClick}
       disabled={isDisabled}
     >
