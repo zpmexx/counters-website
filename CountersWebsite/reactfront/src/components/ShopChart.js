@@ -37,9 +37,6 @@ const ShopChart = ({ selectedDateRange, shopId }) => {
   });
 
   useEffect(() => {
-    console.log("Odświeżenie");
-    console.log(shopId);
-    console.log(dataAndGrouping);
 
     const fetchData = async () => {
       if (!shopId) return;
@@ -48,15 +45,15 @@ const ShopChart = ({ selectedDateRange, shopId }) => {
       let groupby;
       switch (countDaysBetweenDates(selectedDateRange)) {
         case 1:
-          url = `http://172.17.3.131/grouped_by_hour/${shopId}/`;
+          url = `http://172.17.3.131/drf/grouped_by_hour/${shopId}/`;
           groupby = 'hour';
           break;
         case 7:
-          url = `http://172.17.3.131/grouped_by_seven/${shopId}/`
+          url = `http://172.17.3.131/drf/grouped_by_seven/${shopId}/`
           groupby = 'day';
           break;
         case 31:
-          url = `http://172.17.3.131/grouped_by_thirty/${shopId}/`
+          url = `http://172.17.3.131/drf/grouped_by_thirty/${shopId}/`
           groupby = 'day';
           break;
       }
