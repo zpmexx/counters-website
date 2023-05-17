@@ -69,7 +69,12 @@ const ShopChart = ({ selectedDateRange, shopId }) => {
       }
     };
 
+    // Call fetchData once immediately, then every 5 seconds
     fetchData();
+    const interval = setInterval(fetchData, 5000);
+
+    // Clean up the interval on unmount
+    return () => clearInterval(interval);
   }, [shopId, selectedDateRange]);
 
   // if (!shopId) return null;
@@ -100,10 +105,10 @@ const ShopChart = ({ selectedDateRange, shopId }) => {
       }).filter(e => e.x >= 8 && e.x <= 22);
     }
     if (dataAndGrouping.groupBy === 'day') {
-      result = new Array(countDaysBetweenDates(selectedDateRange)+1).fill().map((_, index) => {
+      result = new Array(countDaysBetweenDates(selectedDateRange)).fill().map((_, index) => {
         // Create a new Date object for the current day
         let currentDate = new Date(selectedDateRange.startDate.getTime());
-        currentDate.setDate(selectedDateRange.startDate.getDate() + index);
+        currentDate.setDate(selectedDateRange.startDate.getDate() + 1 + index);
     
         // Format the current date as a string for easier comparison
         let currentDateString = currentDate.toISOString().split('T')[0];
@@ -155,7 +160,7 @@ const ShopChart = ({ selectedDateRange, shopId }) => {
     // const dateRangeLabel = getDateRangeLabel();
     // if (typeof t === 'number') return ''
 
-    console.log(countDaysBetweenDates(selectedDateRange));
+    // console.log(countDaysBetweenDates(selectedDateRange));
 
     switch (countDaysBetweenDates(selectedDateRange)) {
       case 1:
