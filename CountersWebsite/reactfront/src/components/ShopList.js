@@ -26,13 +26,13 @@ const ShopList = ({ onShopClick, selectedShop, searchValue, setSearchValue }) =>
 
   const fetchDataCurrent = async () => {
     try {
-      const todayResponse = await axios.get('http://172.17.3.131/today/?format=json');
+      const todayResponse = await axios.get('http://172.17.3.131/drf/today/?format=json');
       setShopsToday(todayResponse.data);
   
-      const sevenDaysResponse = await axios.get('http://172.17.3.131/current_seven/?format=json');
+      const sevenDaysResponse = await axios.get('http://172.17.3.131/drf/current_seven/?format=json');
       setShopsCurrent7Days(sevenDaysResponse.data);
   
-      const thirtyDaysResponse = await axios.get('http://172.17.3.131/current_thirty/?format=json');
+      const thirtyDaysResponse = await axios.get('http://172.17.3.131/drf/current_thirty/?format=json');
       setShopsCurrent30Days(thirtyDaysResponse.data);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -41,10 +41,10 @@ const ShopList = ({ onShopClick, selectedShop, searchValue, setSearchValue }) =>
 
   const fetchDataPrevious = async () => {
     try {
-      const sevenDaysResponse = await axios.get('http://172.17.3.131/previous_seven/?format=json');
+      const sevenDaysResponse = await axios.get('http://172.17.3.131/drf/previous_seven/?format=json');
       setShopsPrevious7Days(sevenDaysResponse.data);
   
-      const thirtyDaysResponse = await axios.get('http://172.17.3.131/previous_thirty/?format=json');
+      const thirtyDaysResponse = await axios.get('http://172.17.3.131/drf/previous_thirty/?format=json');
       setShopsPrevious30Days(thirtyDaysResponse.data);
     } catch (error) {
       console.error('Error fetching data:', error);

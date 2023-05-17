@@ -29,7 +29,6 @@ function App() {
     // setChartData(processedData);
     setSelectedShop(shopId);
     setSelectedDateRange(newDateRange);
-    console.log(selectedDateRange);
   };
   
 
