@@ -178,18 +178,18 @@ const ShopList = ({ onShopClick, selectedShop, searchValue, setSearchValue }) =>
           >
             <div className="flex justify-between items-center gap-0.5">
               <ShopListElement text={shopId} bgColor={selectedShop === shopId ? "faded" : "primary"} roundedClass={index === displayedShops.length - 1 ? "rounded-bl-2xl" : ""}  />
-              <ShopListElement text={groupedShopsToday[shopId] || '...'} bgColor={selectedShop === shopId ? "faded" : "primary"} onClick={() => {
+              <ShopListElement text={groupedShopsToday[shopId] || '-'} bgColor={selectedShop === shopId ? "faded" : "primary"} onClick={() => {
                   const newDateRange = getDateRange(1);
                   onShopClick(shopId, {startDate: newDateRange[0], endDate: newDateRange[1]});
                 }} 
               />
-              <ShopListElement text={groupedShopsCurrent7Days[shopId] || '...'} bgColor={selectedShop === shopId ? "faded" : "primary"} onClick={() => {
+              <ShopListElement text={groupedShopsCurrent7Days[shopId] || '-'} bgColor={selectedShop === shopId ? "faded" : "primary"} onClick={() => {
                   const newDateRange = getDateRange(7);
                   onShopClick(shopId, {startDate: newDateRange[0], endDate: newDateRange[1]});
                 }} 
               />
-              <ShopListElement text={groupedShopsCurrent30Days[shopId] || '...'} bgColor={selectedShop === shopId ? "faded" : "primary"} onClick={() => {
-                  const newDateRange = getDateRange(30);
+              <ShopListElement text={groupedShopsCurrent30Days[shopId] || '-'} bgColor={selectedShop === shopId ? "faded" : "primary"} onClick={() => {
+                  const newDateRange = getDateRange(31);
                   onShopClick(shopId, {startDate: newDateRange[0], endDate: newDateRange[1]});
                 }} roundedClass={index === displayedShops.length - 1 ? "rounded-br-2xl" : ""}
               />

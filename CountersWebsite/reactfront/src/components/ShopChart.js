@@ -55,7 +55,7 @@ const ShopChart = ({ selectedDateRange, shopId }) => {
           url = `http://172.17.3.131/grouped_by_seven/${shopId}/`
           groupby = 'day';
           break;
-        case 30:
+        case 31:
           url = `http://172.17.3.131/grouped_by_thirty/${shopId}/`
           groupby = 'day';
           break;
@@ -75,7 +75,7 @@ const ShopChart = ({ selectedDateRange, shopId }) => {
     fetchData();
   }, [shopId, selectedDateRange]);
 
-  if (!shopId) return null;
+  // if (!shopId) return null;
 
   // const filteredData = chartData.labels
   //   .map((label, index) => ({
@@ -133,9 +133,9 @@ const ShopChart = ({ selectedDateRange, shopId }) => {
     if (rangeInDays === 1) {
       return "Dzisiaj";
     } else if (rangeInDays === 7) {
-      return "Ostatnie 7 dni";
+      return "7 dni";
     } else if (rangeInDays === 31) {
-      return "Ostatnie 31 dni";
+      return "31 dni";
     } else {
       return "Dzisiaj";
     }
@@ -176,7 +176,7 @@ const ShopChart = ({ selectedDateRange, shopId }) => {
     <div className="flex flex-col w-1/2 items-center">
       <div className="text-xl mb-4 flex justify-center gap-3 w-full mb-4">
         <ChartInfoBox label="Sklep" value={shopId}/>
-        <ChartInfoBox label="Klientów" value={totalEntrances()} />
+        <ChartInfoBox label="Przejść" value={totalEntrances()} />
         <ChartInfoBox label="Okres" value={getDateRangeLabel()} />
       </div>
       <div className="w-2/3 bg-primary w-full rounded-2xl shadow-lg">
