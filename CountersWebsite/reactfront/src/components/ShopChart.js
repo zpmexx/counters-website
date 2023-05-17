@@ -102,7 +102,7 @@ const ShopChart = ({ selectedDateRange, shopId }) => {
           x: index,
           y: foundEntry ? foundEntry.count : 0,
         };
-      }).filter(e => e.x >= 8 && e.x <= 22);
+      }).filter(e => e.x >= 6 && e.x <= 22);
     }
     if (dataAndGrouping.groupBy === 'day') {
       result = new Array(countDaysBetweenDates(selectedDateRange)).fill().map((_, index) => {
@@ -146,7 +146,7 @@ const ShopChart = ({ selectedDateRange, shopId }) => {
   const getTickCount = () => {
     switch (countDaysBetweenDates(selectedDateRange)) {
       case 1:
-        return 5;
+        return 7;
       case 7:
         return 3;
       case 30:
@@ -207,7 +207,7 @@ const ShopChart = ({ selectedDateRange, shopId }) => {
                 data={scatterData}
                 size={4}
                 style={{ data: { fill: "#2d6a4f" } }}
-                labels={({ datum }) => `${datum.x}\nKlientów: ${datum.y}`}
+                labels={({ datum }) => `${datum.x}\nPrzejść: ${datum.y}`}
                 labelComponent={
                   <VictoryTooltip
                     cornerRadius={10}

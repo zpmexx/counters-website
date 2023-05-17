@@ -107,7 +107,7 @@ const ShopList = ({ onShopClick, selectedShop, searchValue, setSearchValue }) =>
         return (groupedShopsToday[shopA] - groupedShopsToday[shopB]) * direction;
       case "7days":
         return (groupedShopsCurrent7Days[shopA] - groupedShopsCurrent7Days[shopB]) * direction;
-      case "30days":
+      case "31days":
         return (groupedShopsCurrent30Days[shopA] - groupedShopsCurrent30Days[shopB]) * direction;
       default:
         return 0;
@@ -177,7 +177,10 @@ const ShopList = ({ onShopClick, selectedShop, searchValue, setSearchValue }) =>
             key={shopId}
           >
             <div className="flex justify-between items-center gap-0.5">
-              <ShopListElement text={shopId} bgColor={selectedShop === shopId ? "faded" : "primary"} roundedClass={index === displayedShops.length - 1 ? "rounded-bl-2xl" : ""}  />
+              <ShopListElement text={shopId} bgColor={selectedShop === shopId ? "faded" : "primary"} roundedClass={index === displayedShops.length - 1 ? "rounded-bl-2xl" : ""} onClick={() => {
+                  const newDateRange = getDateRange(1);
+                  onShopClick(shopId, {startDate: newDateRange[0], endDate: newDateRange[1]});
+                }}  />
               <ShopListElement text={groupedShopsToday[shopId] || '-'} bgColor={selectedShop === shopId ? "faded" : "primary"} onClick={() => {
                   const newDateRange = getDateRange(1);
                   onShopClick(shopId, {startDate: newDateRange[0], endDate: newDateRange[1]});
