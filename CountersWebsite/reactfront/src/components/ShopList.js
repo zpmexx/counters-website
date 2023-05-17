@@ -166,7 +166,7 @@ const ShopList = ({ onShopClick, selectedShop, searchValue, setSearchValue }) =>
           <ShopListElement
             text={"31 dni"}
             bgColor={sortColumn.column === "31days" ? "secondary" : "primary"}
-            onClick={() => handleSort("30days")}
+            onClick={() => handleSort("31days")}
             roundedClass={"rounded-tr-2xl"}
           />
         </div>
