@@ -91,7 +91,7 @@ class PassCurrentSeven(generics.ListAPIView):
     search_fields = ['salon']
     
     def get_queryset(self):
-        return Pass.objects.filter(date__gte=datetime.now()-timedelta(days=7)).values('salon').annotate(count=Count('*')).order_by('-count')
+        return Pass.objects.filter(date__gte=datetime.now()-timedelta(days=6)).values('salon').annotate(count=Count('*')).order_by('-count')
 
     #next, previous, count hide
     def get_paginated_response(self, data):
@@ -149,7 +149,7 @@ class PassGroupedBy7Day(generics.ListAPIView):
     serializer_class = GroupByDaySerializer
     def get_queryset(self):
         salon = self.kwargs['salon']
-        return Pass.objects.filter(salon = salon,date__gte=datetime.now()-timedelta(days=7)).annotate(
+        return Pass.objects.filter(salon = salon,date__gte=datetime.now()-timedelta(days=6)).annotate(
     day=TruncDate('date')).values('date').annotate(count=Count('*')).order_by('-date')
 
     #next, previous, count hide
