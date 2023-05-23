@@ -32,7 +32,7 @@ function App() {
       };
       const shopCodes = [...new Set(Object.keys(groupShops(todayResponse.data)))]
       const sortFn = ((a, b) => {
-        return a.localeCompare(b) * -1;
+        return a.localeCompare(b);
       });
       const sortedAndFilteredShops = shopCodes.sort(sortFn);
       
