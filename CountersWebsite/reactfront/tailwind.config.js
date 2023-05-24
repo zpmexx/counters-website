@@ -17,6 +17,9 @@ module.exports = {
         'background-color': '#fff',
         'dark-text': '#111',
         'light-text': '#fff'
+      },
+      height: {
+        '500': '500px'
       }
     },
   },

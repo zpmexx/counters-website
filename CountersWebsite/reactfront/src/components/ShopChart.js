@@ -177,53 +177,50 @@ const ShopChart = ({ selectedDateRange, shopId }) => {
   return (
     <div className="flex flex-col w-1/2 items-center">
       <div className="text-xl mb-4 flex justify-center gap-3 w-full mb-4">
-        <ChartInfoBox label="Sklep" value={shopId}/>
+        <ChartInfoBox label="Salon" value={shopId}/>
         <ChartInfoBox label="Przejść" value={totalEntrances()} />
         <ChartInfoBox label="Okres" value={getDateRangeLabel()} />
       </div>
       <div className="w-2/3 bg-background-color w-full rounded-2xl shadow-lg">
-        <div className="flex justify-center">
-
-          <div>
-            <VictoryChart height={500} minDomain={{ y: 0 }} >
-              <VictoryAxis tickCount={getTickCount()} tickFormat={getTickFormat} style={{
-                  grid: { stroke: '#335145', strokeWidth: 0.5 },
-                  axis: { stroke: '#335145' },
-                  tickLabels: { fill: '#111' },
-                }} />
-              <VictoryAxis dependentAxis tickFormat={(t) => Math.round(t)}
-                style={{
-                  grid: { stroke: '#335145', strokeWidth: 0.5 },
-                  axis: { stroke: '#335145' },
-                  tickLabels: { fill: '#111' },
-                }} />
-              <VictoryArea
-                data={victoryData}
-                style={{
-                  data: {
-                    stroke: "#1E352F",
-                    strokeWidth: 3,
-                    fill: "#335145"
-                  },
-                }}
-                interpolation="monotoneX"
-              />
-              <VictoryScatter
-                data={scatterData}
-                size={4}
-                style={{ data: { fill: "#1E352F" } }}
-                labels={({ datum }) => `${datum.x}\nPrzejść: ${datum.y}`}
-                labelComponent={
-                  <VictoryTooltip
-                    cornerRadius={10}
-                    flyoutStyle={{ fill: "#A6C36F", stroke: "black", strokeWidth: 1 }}
-                    flyoutPadding={15}
-                  />
-                }
-              />
-              
-            </VictoryChart>
-          </div>
+        <div className="flex justify-center h-500">
+          <VictoryChart height={500} minDomain={{ y: 0 }} >
+            <VictoryAxis tickCount={getTickCount()} tickFormat={getTickFormat} style={{
+                grid: { stroke: '#335145', strokeWidth: 0.5 },
+                axis: { stroke: '#335145' },
+                tickLabels: { fill: '#111' },
+              }} />
+            <VictoryAxis dependentAxis tickFormat={(t) => Math.round(t)}
+              style={{
+                grid: { stroke: '#335145', strokeWidth: 0.5 },
+                axis: { stroke: '#335145' },
+                tickLabels: { fill: '#111' },
+              }} />
+            <VictoryArea
+              data={victoryData}
+              style={{
+                data: {
+                  stroke: "#1E352F",
+                  strokeWidth: 3,
+                  fill: "#335145"
+                },
+              }}
+              interpolation="monotoneX"
+            />
+            <VictoryScatter
+              data={scatterData}
+              size={4}
+              style={{ data: { fill: "#1E352F" } }}
+              labels={({ datum }) => `${datum.x}\nPrzejść: ${datum.y}`}
+              labelComponent={
+                <VictoryTooltip
+                  cornerRadius={10}
+                  flyoutStyle={{ fill: "#A6C36F", stroke: "black", strokeWidth: 1 }}
+                  flyoutPadding={15}
+                />
+              }
+            />
+            
+          </VictoryChart>
         </div>
       </div>
     </div>

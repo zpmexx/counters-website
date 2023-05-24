@@ -148,7 +148,7 @@ const ShopList = ({ onShopClick, selectedShop, searchValue, setSearchValue }) =>
       <h2 className="text-xl font-bold">
         <div className="flex justify-between items-center gap-0.5">
           <ShopListElement
-            text={"Shop"}
+            text={"Salon"}
             bgColor={sortColumn.column === "shop" ? "background-secondary" : "primary"}
             onClick={() => handleSort("shop")}
             roundedClass={"rounded-tl-2xl"}
