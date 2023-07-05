@@ -36,10 +36,31 @@ const ShopChart = ({ selectedDateRange, shopId }) => {
     groupBy: 'hour'
   });
 
+  const [shopsToday, setShopsToday] = useState([]);
+  const [shopsCurrent7Days, setShopsCurrent7Days] = useState([]);
+  const [shopsCurrent30Days, setShopsCurrent30Days] = useState([]);
+
+  const fetchDataCurrent = async () => {
+    try {
+      const todayResponse = await axios.get('http://172.17.3.131/drf/today/?format=json');
+      setShopsToday(todayResponse.data);
+  
+      const sevenDaysResponse = await axios.get('http://172.17.3.131/drf/current_seven/?format=json');
+      setShopsCurrent7Days(sevenDaysResponse.data);
+  
+      const thirtyDaysResponse = await axios.get('http://172.17.3.131/drf/current_thirty/?format=json');
+      setShopsCurrent30Days(thirtyDaysResponse.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
   useEffect(() => {
 
     const fetchData = async () => {
       if (!shopId) return;
+
+      fetchDataCurrent();
 
       let url;
       let groupby;
@@ -100,7 +121,7 @@ const ShopChart = ({ selectedDateRange, shopId }) => {
     
         return {
           x: index,
-          y: foundEntry ? foundEntry.count : 0,
+          y: foundEntry ? Math.floor(foundEntry.count / 2) : 0,
         };
       }).filter(e => e.x >= 6 && e.x <= 22);
     }
@@ -118,7 +139,7 @@ const ShopChart = ({ selectedDateRange, shopId }) => {
     
         return {
           x: `${currentDateString}\n${dayOfTheWeekName(currentDate.getDay())}`,
-          y: foundEntry ? foundEntry.count : 0,
+          y: foundEntry ? Math.floor(foundEntry.count / 2) : 0,
         };
       });
     }
@@ -174,11 +195,25 @@ const ShopChart = ({ selectedDateRange, shopId }) => {
     return victoryData.reduce((total, item) => total + item.y, 0);
   }
 
+  function clients() {
+    if (shopsToday.find(x => x.salon == shopId) !== undefined) {
+      switch (countDaysBetweenDates(selectedDateRange)) {
+        case 1:
+          return Math.ceil(shopsToday.find(x => x.salon == shopId).count / 2);
+        case 7:
+          return Math.ceil(shopsCurrent7Days.find(x => x.salon == shopId).count / 2);
+        case 31:
+          return Math.ceil(shopsCurrent30Days.find(x => x.salon == shopId).count / 2);
+      }
+    }
+    return '-';
+  }
+
   return (
     <div className="flex flex-col w-1/2 items-center">
       <div className="text-xl mb-4 flex justify-center gap-3 w-full mb-4">
         <ChartInfoBox label="Salon" value={shopId}/>
-        <ChartInfoBox label="Przejść" value={totalEntrances()} />
+        <ChartInfoBox label="Klientów" value={clients()} />
         <ChartInfoBox label="Okres" value={getDateRangeLabel()} />
       </div>
       <div className="w-2/3 bg-background-color w-full rounded-2xl shadow-lg">
@@ -210,7 +245,7 @@ const ShopChart = ({ selectedDateRange, shopId }) => {
               data={scatterData}
               size={4}
               style={{ data: { fill: "#1E352F" } }}
-              labels={({ datum }) => `${datum.x}\nPrzejść: ${datum.y}`}
+              labels={({ datum }) => `${(isNaN(datum.x)) ? datum.x : datum.x+':00'}\nKlientów: ${datum.y}`}
               labelComponent={
                 <VictoryTooltip
                   cornerRadius={10}

@@ -181,17 +181,17 @@ const ShopList = ({ onShopClick, selectedShop, searchValue, setSearchValue }) =>
                   const newDateRange = getDateRange(1);
                   onShopClick(shopId, {startDate: newDateRange[0], endDate: newDateRange[1]});
                 }}  />
-              <ShopListElement text={groupedShopsToday[shopId] || '-'} bgColor={selectedShop === shopId ? "background-secondary" : "primary"} onClick={() => {
+              <ShopListElement text={Math.ceil(groupedShopsToday[shopId] / 2) || '-'} bgColor={selectedShop === shopId ? "background-secondary" : "primary"} onClick={() => {
                   const newDateRange = getDateRange(1);
                   onShopClick(shopId, {startDate: newDateRange[0], endDate: newDateRange[1]});
                 }} 
               />
-              <ShopListElement text={groupedShopsCurrent7Days[shopId] || '-'} bgColor={selectedShop === shopId ? "background-secondary" : "primary"} onClick={() => {
+              <ShopListElement text={Math.ceil(groupedShopsCurrent7Days[shopId] / 2) || '-'} bgColor={selectedShop === shopId ? "background-secondary" : "primary"} onClick={() => {
                   const newDateRange = getDateRange(7);
                   onShopClick(shopId, {startDate: newDateRange[0], endDate: newDateRange[1]});
                 }} 
               />
-              <ShopListElement text={groupedShopsCurrent30Days[shopId] || '-'} bgColor={selectedShop === shopId ? "background-secondary" : "primary"} onClick={() => {
+              <ShopListElement text={Math.ceil(groupedShopsCurrent30Days[shopId] / 2) || '-'} bgColor={selectedShop === shopId ? "background-secondary" : "primary"} onClick={() => {
                   const newDateRange = getDateRange(31);
                   onShopClick(shopId, {startDate: newDateRange[0], endDate: newDateRange[1]});
                 }} roundedClass={index === displayedShops.length - 1 ? "rounded-br-2xl" : ""}
